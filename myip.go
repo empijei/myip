@@ -48,7 +48,8 @@ func external() (ext string) {
 	m.SetQuestion(target+".", dns.TypeA)
 	r, _, err := c.Exchange(&m, server+":53")
 	if err != nil {
-		log.Println(err)
+		//log.Println(err)
+		return
 	}
 	for _, ans := range r.Answer {
 		Arecord := ans.(*dns.A)
