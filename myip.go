@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -8,7 +9,10 @@ import (
 	"github.com/miekg/dns"
 )
 
+var ipv6 = flag.Bool("6", false, "Print also IPv6 IPs")
+
 func main() {
+	flag.Parse()
 	ifaces, err := net.Interfaces()
 	// handle err
 	if err != nil {
@@ -30,7 +34,9 @@ func main() {
 			case *net.IPAddr:
 				ip = v.IP
 			}
-			fmt.Printf("%v: %v\n", i.Name, ip)
+			if ip.To4() != nil || *ipv6 {
+				fmt.Printf("%v: %v\n", i.Name, ip)
+			}
 			// process IP address
 		}
 	}
@@ -38,6 +44,7 @@ func main() {
 }
 
 //dig +short myip.opendns.com @resolver1.opendns.com
+//TODO add ipv6 support?
 func external() (ext string) {
 	ext = "Not found"
 	target := "myip.opendns.com"
