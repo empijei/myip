@@ -19,9 +19,6 @@ func main() {
 		log.Fatal(err)
 	}
 	for _, i := range ifaces {
-		if i.Name == "lo" {
-			continue
-		}
 		addrs, err := i.Addrs()
 		if err != nil {
 			log.Fatal(err)
@@ -34,7 +31,7 @@ func main() {
 			case *net.IPAddr:
 				ip = v.IP
 			}
-			if ip.To4() != nil || *ipv6 {
+			if !ip.IsLoopback() && (ip.To4() != nil || *ipv6) {
 				fmt.Printf("%v: %v\n", i.Name, ip)
 			}
 			// process IP address
